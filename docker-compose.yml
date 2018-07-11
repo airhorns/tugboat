@@ -1,7 +1,18 @@
-version: "3.6"
+version: "2.1"
 
 services:
+
   core:
-    build:
-      context: core
+    build: './core'
     command: 'true'
+    restart: always
+
+  metrics:
+    build: ./metrics
+    pid: host
+    privileged: true
+    network_mode: host
+    restart: always
+    labels:
+      io.resin.features.balena-socket: '1'
+      io.resin.features.dbus: '1'
