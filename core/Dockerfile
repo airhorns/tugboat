@@ -15,3 +15,5 @@ RUN git clone https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git && \
 WORKDIR /root/catkin_ws
 RUN bash -c "source /opt/ros/kinetic/setup.sh && catkin_make -v -j1"
 RUN bash -c "source /opt/ros/kinetic/setup.sh && rosrun create_udev_rules"
+COPY docker-entrypoint.sh /root/docker-entrypoint
+ENTRYPOINT /root/docker-entrypoint
