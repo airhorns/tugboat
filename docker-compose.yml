@@ -3,11 +3,12 @@ version: "2.1"
 services:
 
   core:
-    build: './core'
-    command: 'true'
+    build: ./core
+    command: "roscore"
     restart: always
     privileged: true
     network_mode: host
+    tty: true
 
   metrics:
     build: ./metrics
