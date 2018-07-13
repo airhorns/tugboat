@@ -6,6 +6,8 @@ services:
     build: './core'
     command: 'true'
     restart: always
+    privileged: true
+    network_mode: host
 
   metrics:
     build: ./metrics
