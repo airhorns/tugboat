@@ -4,11 +4,29 @@ services:
 
   core:
     build: ./core
-    command: "roscore"
+    restart: always
+    privileged: true
+    tty: true
+    network_mode: host
+    environment:
+      TURTLEBOT3_MODEL: 'burger'
+      ROS_MASTER_URI: http://127.0.0.1:11311
+      ROS_IP: 192.168.2.30
+    labels:
+      io.resin.features.supervisor-api: '1'
+
+  bringup:
+    build: ./core
+    command: [roslaunch, turtlebot3_bringup, turtlebot3_robot.launch]
     restart: always
     privileged: true
     network_mode: host
-    tty: true
+    environment:
+      TURTLEBOT3_MODEL: 'burger'
+      ROS_MASTER_URI: http://127.0.0.1:11311
+      ROS_IP: 192.168.2.30
+    labels:
+      io.resin.features.supervisor-api: '1'
 
   metrics:
     build: ./metrics
