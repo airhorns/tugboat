@@ -20,4 +20,3 @@ RUN bash -c "source /opt/ros/kinetic/setup.bash && \
 COPY docker-entrypoint.sh /root/docker-entrypoint
 COPY resin-ip.py /root/resin-ip.py
 ENTRYPOINT ["/root/docker-entrypoint"]
-CMD ["roscore", "-v", "-p", "11311"]
