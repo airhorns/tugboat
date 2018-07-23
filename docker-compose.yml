@@ -5,6 +5,7 @@ services:
   core:
     build: ./core
     command: ["roscore", "-v", "-p", "11311"]
+    # command: ["bash"]
     restart: always
     privileged: true # required to give roscore access to hardware devices
     tty: true # required to make roscore log to stdin
@@ -12,20 +13,19 @@ services:
     environment:
       TURTLEBOT3_MODEL: 'burger'
       ROS_MASTER_URI: http://127.0.0.1:11311
-      ROS_IP: 192.168.2.30
     labels:
       io.resin.features.supervisor-api: '1'
 
   bringup:
     build: ./core
     command: ["roslaunch", "turtlebot3_bringup", "turtlebot3_robot.launch"]
+    # command: ["bash"]
     restart: always
     privileged: true # required to give ros nodes access to hardware devices
     network_mode: host # required for access to the resin supervisor for getting external IPs
     environment:
       TURTLEBOT3_MODEL: 'burger'
       ROS_MASTER_URI: http://127.0.0.1:11311
-      ROS_IP: 192.168.2.30
     labels:
       io.resin.features.supervisor-api: '1'
 
