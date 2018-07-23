@@ -4,7 +4,7 @@ services:
 
   core:
     build: ./core
-    command: [roscore, -v, -p, 11311]
+    command: ["roscore", "-v", "-p", "11311"]
     restart: always
     privileged: true # required to give roscore access to hardware devices
     tty: true # required to make roscore log to stdin
@@ -18,7 +18,7 @@ services:
 
   bringup:
     build: ./core
-    command: [roslaunch, turtlebot3_bringup, turtlebot3_robot.launch]
+    command: ["roslaunch", "turtlebot3_bringup", "turtlebot3_robot.launch"]
     restart: always
     privileged: true # required to give ros nodes access to hardware devices
     network_mode: host # required for access to the resin supervisor for getting external IPs
