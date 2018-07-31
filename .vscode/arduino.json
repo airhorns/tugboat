@@ -1,0 +1,4 @@
+{
+    "sketch": "opencr_firmware/tugboat/sketch.ino",
+    "output": "opencr_firmware/build"
+}
