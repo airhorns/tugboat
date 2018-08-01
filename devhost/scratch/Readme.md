@@ -1,0 +1,2 @@
+# Scratch folder
+This folder is mounted into all the containers in the hosts for the handy ability to move files in and out of the host containers easily. This is used for the `ros_arduino` library generation process (`ros_lib`) as well.

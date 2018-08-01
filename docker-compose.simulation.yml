@@ -1,7 +1,7 @@
 version: "2.1"
 
 services:
-  tugboat: &tugboat_base
+  simulation_tugboat: &tugboat_base
     build: './host'
     tty: true
     command: ["roslaunch", "tugboat", "tugboat_empty_world.launch"]
@@ -20,7 +20,7 @@ services:
       # - $XAUTH:/root/.Xauthority
       - $HOME/Code/tugboat/tugboat:/root/catkin_ws/src/tugboat:delegated
 
-  roscore:
+  simulation_roscore:
     <<: *tugboat_base
     command: ["roscore", "-v"]
     depends_on: []
@@ -31,7 +31,7 @@ services:
   # It's handy to be able to mess around in a set up environment with the same dependencies and environment
   # as the rest of the services, but, we don't generally need it running in the background. So, this sets it all up
   # but we execute a command (true) that exits immediately to keep the container stopped by default.
-  shell:
+  simulation_shell:
     <<: *tugboat_base
     command: "true"
     stdin_open: true

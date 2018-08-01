@@ -1,15 +1,15 @@
 version: "2.1"
 
 services:
-  bringup: &tugboat_base
-    build: './host'
+  devhost_bringup: &tugboat_base
+    build: './devhost'
     tty: true
-    # command: ["roslaunch", "turtlebot3_bringup", "turtlebot3_remote.launch"]
-    command: ["true"]
+    command: ["roslaunch", "turtlebot3_bringup", "turtlebot3_remote.launch"]
     privileged: true
     network_mode: host
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./devhost/scratch:/root/scratch
     environment:
       DISPLAY: $DISPLAY
       QT_X11_NO_MITSHM: '1'
@@ -17,7 +17,7 @@ services:
       ROS_MASTER_URI: http://$TURTLEBOT_IP:11311
       ROS_IP: $IP
 
-  gmapping_slam:
+  devhost_gmapping_slam:
     <<: *tugboat_base
     command: ["roslaunch", "turtlebot3_slam", "turtlebot3_slam.launch", "slam_methods:=gmapping"]
 
@@ -27,6 +27,6 @@ services:
   # but we execute a command (true) that exits immediately to keep the container stopped by default.
   shell:
     <<: *tugboat_base
-    build: './host'
-    command: "true"
+    build: './devhost'
+    command: "bash"
     stdin_open: true

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+set -ex
+rm -rf $DIR/ros_lib
+docker run 
+rosrun rosserial_arduino make_libraries.py .
