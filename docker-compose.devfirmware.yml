@@ -1,0 +1,33 @@
+version: "2.1"
+
+services:
+  devfirmware_roscore: &tugboat_base
+    build: './devhost'
+    tty: true
+    command: ["roscore", "-v", "-p", "11311"]
+    restart: always
+    privileged: true # required to give roscore access to hardware devices
+    network_mode: host # required for access to the resin supervisor for getting external IPs
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./devhost/scratch:/root/scratch
+    environment:
+      DISPLAY: $DISPLAY
+      QT_X11_NO_MITSHM: '1'
+
+  devfirmware_rosserial: 
+    <<: *tugboat_base
+    command: ["bash", "-c", "sleep 5 && rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0 _baud:=57600"]
+    depends_on:
+      - devfirmware_roscore
+
+  # This container is for manual invocation via `docker-compose run shell bash`.
+  # It's handy to be able to mess around in a set up environment with the same dependencies and environment
+  # as the rest of the services, but, we don't generally need it running in the background. So, this sets it all up
+  # but we execute a command (true) that exits immediately to keep the container stopped by default.
+  devfirmware_shell:
+    <<: *tugboat_base
+    build: './devhost'
+    command: "true"
+    stdin_open: true
+
