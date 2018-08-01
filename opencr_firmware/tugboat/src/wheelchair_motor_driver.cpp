@@ -1,7 +1,9 @@
-#include <wheelchair_motor_driver.h>
 #include <Wire.h>
+#include "wheelchair_motor_driver.h"
 
-// WheelchairMotorDriver::WheelchairMotorDriver(): {}
+WheelchairMotorDriver::WheelchairMotorDriver() {
+
+}
 
 WheelchairMotorDriver::~WheelchairMotorDriver() {
   close();

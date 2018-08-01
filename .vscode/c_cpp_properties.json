@@ -3,8 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "opencr_firmware/libraries/**",
-                "opencr_firmware/tugboat/**",
+                "opencr_firmware/tugboat/libraries/**",
                 "/home/airhorns/.arduino15/packages/OpenCR/tools/**",
                 "/home/airhorns/.arduino15/packages/OpenCR/hardware/OpenCR/1.3.1/**"
             ],

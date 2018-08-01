@@ -1,4 +1,4 @@
-#include <tugboat_config.h>
+#include "tugboat_config.h"
 #include <Adafruit_MCP4725.h>
 
 #define DEBUG_SERIAL    SerialBT2
