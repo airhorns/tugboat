@@ -4,6 +4,9 @@
 #include <ros.h>
 #include <std_msgs/String.h>
 #include <std_msgs/Byte.h>
+#include <std_msgs/Bool.h>
+#include <std_msgs/Empty.h>
+#include <geometry_msgs/Twist.h>
 #include "src/wheelchair_motor_driver.h"
 
 int led_pin_user[4] = { BDPIN_LED_USER_1, BDPIN_LED_USER_2, BDPIN_LED_USER_3, BDPIN_LED_USER_4 };
@@ -18,33 +21,33 @@ float goal_velocity[WHEEL_NUM] = {0.0, 0.0};
 float goal_velocity_from_button[WHEEL_NUM] = {0.0, 0.0};
 float goal_velocity_from_cmd[WHEEL_NUM] = {0.0, 0.0};
 
-void messageCb( const std_msgs::Byte& led_msg) {
+void lightLedCallback( const std_msgs::Byte& led_msg) {
   int i;
 
-  for (i = 0; i < 4; i++)
-  {
-    if (led_msg.data & (1 << i))
-    {
+  for (i = 0; i < 4; i++) {
+    if (led_msg.data & (1 << i)) {
       digitalWrite(led_pin_user[i], LOW);
-    }
-    else
-    {
+    } else {
       digitalWrite(led_pin_user[i], HIGH);
     }
   }
 }
 
-void updateGoalVelocity(void) {
-  goal_velocity[LINEAR]  = goal_velocity_from_button[LINEAR]  + goal_velocity_from_cmd[LINEAR];
-  goal_velocity[ANGULAR] = goal_velocity_from_button[ANGULAR] + goal_velocity_from_cmd[ANGULAR];
-}
+void commandVelocityCallback(const geometry_msgs::Twist& cmd_vel_msg) {
+  goal_velocity_from_cmd[LINEAR]  = cmd_vel_msg.linear.x;
+  goal_velocity_from_cmd[ANGULAR] = cmd_vel_msg.angular.z;
 
-void updateTime() {
-  current_offset = millis();
-  current_time = nh.now();
-}
+  goal_velocity_from_cmd[LINEAR]  = constrain(goal_velocity_from_cmd[LINEAR],  MIN_LINEAR_VELOCITY, MAX_LINEAR_VELOCITY);
+  goal_velocity_from_cmd[ANGULAR] = constrain(goal_velocity_from_cmd[ANGULAR], MIN_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
+};
 
-ros::Subscriber<std_msgs::Byte> sub("led_out", messageCb );
+void motorPowerCallback(const std_msgs::Bool& power_msg);
+void resetCallback(const std_msgs::Empty& reset_msg);
+
+ros::Subscriber<std_msgs::Byte> led_out_sub("led_out", lightLedCallback );
+ros::Subscriber<geometry_msgs::Twist> cmd_vel_sub("cmd_vel", commandVelocityCallback);
+ros::Subscriber<std_msgs::Bool> motor_power_sub("motor_power", motorPowerCallback);
+ros::Subscriber<std_msgs::Empty> reset_sub("reset", resetCallback);
 
 void setup() {
   motor_driver.init();
@@ -55,7 +58,20 @@ void setup() {
   pinMode(led_pin_user[3], OUTPUT);
 
   nh.initNode();
-  nh.subscribe(sub);
+  nh.subscribe(led_out_sub);
+  nh.subscribe(cmd_vel_sub);
+  nh.subscribe(motor_power_sub);
+  nh.subscribe(reset_sub);
+}
+
+void updateGoalVelocity(void) {
+  goal_velocity[LINEAR]  = goal_velocity_from_button[LINEAR]  + goal_velocity_from_cmd[LINEAR];
+  goal_velocity[ANGULAR] = goal_velocity_from_button[ANGULAR] + goal_velocity_from_cmd[ANGULAR];
+}
+
+void updateTime() {
+  current_offset = millis();
+  current_time = nh.now();
 }
 
 void loop() {

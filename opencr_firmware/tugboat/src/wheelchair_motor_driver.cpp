@@ -11,9 +11,12 @@ WheelchairMotorDriver::~WheelchairMotorDriver() {
 
 bool WheelchairMotorDriver::init(void) {
   DEBUG_SERIAL.begin(57600);
-  #define ARDUINO 100
   left_wheel_dac_.begin(DAC_LEFT_ID);
   right_wheel_dac_.begin(DAC_RIGHT_ID);
+
+  // Init at 2.5V to match the joystick's home position at 2.5V
+  left_wheel_dac_.setVoltage(2048, false);
+  right_wheel_dac_.setVoltage(2048, false);
 
   DEBUG_SERIAL.println("Success initing WheelchairMotorDriver");
   return true;
@@ -43,8 +46,8 @@ bool WheelchairMotorDriver::controlMotor(const float wheel_separation, float* va
   wheel_velocity_cmd[LEFT]   = lin_vel - (ang_vel * wheel_separation / 2);
   wheel_velocity_cmd[RIGHT]  = lin_vel + (ang_vel * wheel_separation / 2);
 
-  wheel_velocity_cmd[LEFT]  = constrain(wheel_velocity_cmd[LEFT]  * VELOCITY_CONSTANT_VALUE, -2047, 2047) + 2048; // convert to 12 bit scale for DAC voltage
-  wheel_velocity_cmd[RIGHT] = constrain(wheel_velocity_cmd[RIGHT] * VELOCITY_CONSTANT_VALUE, -2047, 2047) + 2048;
+  wheel_velocity_cmd[LEFT]  = constrain(wheel_velocity_cmd[LEFT]  * VELOCITY_CONSTANT_VALUE, -DAC_VOLTAGE_RANGE, DAC_VOLTAGE_RANGE) + 2048; // convert to 12 bit scale for DAC voltage
+  wheel_velocity_cmd[RIGHT] = constrain(wheel_velocity_cmd[RIGHT] * VELOCITY_CONSTANT_VALUE, -DAC_VOLTAGE_RANGE, DAC_VOLTAGE_RANGE) + 2048;
 
   left_wheel_dac_.setVoltage(wheel_velocity_cmd[LEFT], false);
   right_wheel_dac_.setVoltage(wheel_velocity_cmd[RIGHT], false);

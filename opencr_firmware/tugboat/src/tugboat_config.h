@@ -16,3 +16,9 @@
 
 #define LINEAR                           0
 #define ANGULAR                          1
+
+#define MAX_LINEAR_VELOCITY              0.22   // m/s   (BURGER : 0.22, WAFFLE : 0.25)
+#define MAX_ANGULAR_VELOCITY             2.84   // rad/s (BURGER : 2.84, WAFFLE : 1.82)
+
+#define MIN_LINEAR_VELOCITY              -MAX_LINEAR_VELOCITY  
+#define MIN_ANGULAR_VELOCITY             -MAX_ANGULAR_VELOCITY 

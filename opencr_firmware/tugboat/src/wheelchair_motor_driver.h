@@ -5,7 +5,7 @@
 #define DAC_LEFT_ID     0x63       // I2C address of left motor control DAC
 #define DAC_RIGHT_ID    0x64       // I2C address of right motor control DAC
 
-
+#define DAC_VOLTAGE_RANGE               1500 // For the 12 bit DACs go up or down this much from halfway (2.5V). 1500 is roughly 70% of 2048, which gives a max of 4.25V and a min of .75V, which were observed to be about right.
 #define VELOCITY_CONSTANT_VALUE         0.05
 
 class WheelchairMotorDriver {
