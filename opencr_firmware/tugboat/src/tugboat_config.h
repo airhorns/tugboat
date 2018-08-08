@@ -1,5 +1,5 @@
 #define ARDUINO 100
-#define CONTROL_MOTOR_SPEED_FREQUENCY          30   //hz
+#define CONTROL_MOTOR_SPEED_FREQUENCY          1   //hz
 #define IMU_PUBLISH_FREQUENCY                  200  //hz
 #define CMD_VEL_PUBLISH_FREQUENCY              30   //hz
 #define DRIVE_INFORMATION_PUBLISH_FREQUENCY    30   //hz

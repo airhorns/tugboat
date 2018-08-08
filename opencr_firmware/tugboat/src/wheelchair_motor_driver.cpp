@@ -37,11 +37,11 @@ bool WheelchairMotorDriver::writeVelocity(int64_t left_value, int64_t right_valu
   return true;
 }
 
-bool WheelchairMotorDriver::controlMotor(const float wheel_separation, float* value) {
+bool WheelchairMotorDriver::controlMotor(const float wheel_separation, float* goal_velocity) {
   float wheel_velocity_cmd[2];
 
-  float lin_vel = value[LEFT];
-  float ang_vel = value[RIGHT];
+  float lin_vel = goal_velocity[LINEAR];
+  float ang_vel = goal_velocity[ANGULAR];
 
   wheel_velocity_cmd[LEFT]   = lin_vel - (ang_vel * wheel_separation / 2);
   wheel_velocity_cmd[RIGHT]  = lin_vel + (ang_vel * wheel_separation / 2);
