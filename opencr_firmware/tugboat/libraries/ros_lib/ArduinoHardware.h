@@ -1,4 +1,4 @@
-/* 
+/*
  * Software License Agreement (BSD License)
  *
  * Copyright (c) 2011, Willow Garage, Inc.
@@ -41,7 +41,7 @@
   #include <WProgram.h>  // Arduino 0022
 #endif
 
-#if defined(__MK20DX128__) || defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__) || defined(__MKL26Z64__)
+#if defined(__MK20DX128__) || defined(__MK20DX256__)
   #if defined(USE_TEENSY_HW_SERIAL)
     #define SERIAL_CLASS HardwareSerial // Teensy HW Serial
   #else
@@ -54,12 +54,9 @@
 #elif defined(USE_USBCON)
   // Arduino Leonardo USB Serial Port
   #define SERIAL_CLASS Serial_
-#elif (defined(__STM32F1__) and !(defined(USE_STM32_HW_SERIAL))) or defined(SPARK) 
-  // Stm32duino Maple mini USB Serial Port
-  #define SERIAL_CLASS USBSerial
-#else 
+#else
   #include <HardwareSerial.h>  // Arduino AVR
-  #define SERIAL_CLASS HardwareSerial
+  #define SERIAL_CLASS USBSerial // USBSerial / UARTClass (Bluetooth Device) on OpenCR
 #endif
 
 class ArduinoHardware {
@@ -72,37 +69,58 @@ class ArduinoHardware {
     {
 #if defined(USBCON) and !(defined(USE_USBCON))
       /* Leonardo support */
-      iostream = &Serial1;
-#elif defined(USE_TEENSY_HW_SERIAL) or defined(USE_STM32_HW_SERIAL)
-      iostream = &Serial1;
+      iostream = &Serial2;
+#elif defined(USE_TEENSY_HW_SERIAL)
+      iostream = &Serial2;
 #else
       iostream = &Serial;
 #endif
       baud_ = 57600;
     }
     ArduinoHardware(ArduinoHardware& h){
-      this->iostream = h.iostream;
+      this->iostream = iostream;
       this->baud_ = h.baud_;
     }
-  
+
     void setBaud(long baud){
       this->baud_= baud;
     }
-  
+
     int getBaud(){return baud_;}
 
     void init(){
 #if defined(USE_USBCON)
       // Startup delay as a fail-safe to upload a new sketch
-      delay(3000); 
+      delay(3000);
 #endif
       iostream->begin(baud_);
     }
 
     int read(){return iostream->read();};
-    void write(uint8_t* data, int length){
-      for(int i=0; i<length; i++)
-        iostream->write(data[i]);
+    void write(uint8_t* data, int length)
+    {
+      //for(int i=0; i<length; i++)
+      //  iostream->write(data[i]);
+      #if 1
+      iostream->write(data, length);
+      #else
+      uint32_t t_time;
+      uint32_t tx_length;
+
+      t_time = millis();
+      while(1)
+      {
+        tx_length = iostream->write(data, length);
+
+        if(tx_length == length)
+          break;
+
+        if(millis()-t_time > 1000)
+        {
+          break;
+        }
+      }
+      #endif
     }
 
     unsigned long time(){return millis();}
