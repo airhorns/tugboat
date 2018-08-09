@@ -11,13 +11,14 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ./devhost/scratch:/root/scratch
+      - ./opencr_firmware:/root/app
     environment:
       DISPLAY: $DISPLAY
       QT_X11_NO_MITSHM: '1'
 
   devfirmware_rosserial: 
     <<: *tugboat_base
-    command: ["bash", "-c", "sleep 5 && rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0 _baud:=57600"]
+    command: ["bash", "-c", "sleep 2 && rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0 _baud:=57600"]
     depends_on:
       - devfirmware_roscore
 
@@ -28,6 +29,7 @@ services:
   devfirmware_shell:
     <<: *tugboat_base
     build: './devhost'
+    restart: "no"
     command: "true"
     stdin_open: true
 

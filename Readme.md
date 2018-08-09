@@ -10,8 +10,11 @@ This is code for a self driving warehouse automation vehicle. Well, it will be e
  - `opencr_firmware`: Arduino sketch running on the OpenCR to listen to commands from the Pi and interface with hardware
  - `devhost`: Not-resin dockerfile and utility files for running a reliable, repeatable, synced ROS install on your desktop 
 
-# Bringup
+### Testing the firmware
 
-- source /opt/ros/kinetic/setup.bash && export ROS_MASTER_URI=http://core:11311
-- roslaunch turtlebot3_bringup turtlebot3_robot.launch
+The `docker-compose.devfirmware.yml` file specifies a set of containers useful for testing the OpenCR firmware. Once a firmware is flashed to an OpenCR connected to your host, run `docker-compose -f docker-compose.devfirmware.yml up` to start a `roscore` and a `rosserial` process that will send around ROS messages for you. To then interact with the system, run a shell with `docker-compose -f docker-compose.devfirmware.yml run shell bash` to get an interactive bash prompt with the right ROS dependencies and environment set up for you. The `opencr_firmware` folder is mounted at `/root/app` inside your shell and the other containers.
 
+To publish an arbitrary message, you can use `rostopic pub` like so:
+ - `rostopic pub -r 10 /cmd_vel geometry_msgs/Twist  '{linear:  {x: 0.1, y: 0.0, z: 0.0}, angular: {x: 0.0,y: 0.0,z: 0.0}}'`
+
+To test the motor control systems, you can use the `test/motor_test.py` script that will send varying linear and angular velocities to `/cmd_vel`. Run with `python /root/app/test/motor_test.py`.
